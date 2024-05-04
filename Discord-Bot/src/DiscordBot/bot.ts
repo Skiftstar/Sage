@@ -2,7 +2,6 @@ import {
   EmbedBuilder,
   TextChannel,
   ChatInputCommandInteraction,
-  GuildBasedChannel
 } from 'discord.js'
 import { getConfigValue } from '../Config/config'
 import { client } from '..'
