@@ -1,35 +1,31 @@
 import { readdirSync } from 'fs'
-import path from 'path'
-import { Collection, GatewayIntentBits } from 'discord.js'
-import { getConfigValue } from './Config/config'
+import {
+  ChannelType,
+  Collection,
+  GatewayIntentBits,
+  Partials
+} from 'discord.js'
 import { BotClient } from './DiscordBot/botClient'
 import { REST, Routes } from 'discord.js'
 import { sendError, startBot } from './DiscordBot/bot'
-import express from 'express'
-import cors from 'cors'
+import dotenv from 'dotenv'
+import path from 'path'
 
-const apiPort = getConfigValue('apiPort')
-export const apiApp = express()
-apiApp.use(cors())
-
-apiApp.listen(apiPort, () => {
-  console.log(`API Server is running at http://localhost:${apiPort}`)
-})
+dotenv.config({ path: path.resolve(__dirname, '../../.env') })
 
 export const client = new BotClient({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent]
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.DirectMessages
+  ],
+  partials: [Partials.Channel]
 })
 
 const commandFolder = path.join(__dirname, 'Commands')
 const commandFiles = readdirSync(commandFolder)
 client.commands = new Collection()
 const commands: any[] = []
-
-readdirSync(path.join(__dirname, 'API/routes')).forEach((file: any) => {
-  const route = require(`./API/routes/${file}`)
-  const fileName = file.split('.')[0] // Filename will be used for the route
-  apiApp.use(`/${fileName}`, route)
-})
 
 for (const file of commandFiles) {
   const command = require(`./Commands/${file}`)
@@ -39,8 +35,9 @@ for (const file of commandFiles) {
   }
 }
 
-const token = getConfigValue('token')
-const clientId = getConfigValue('clientId')
+const token = process.env.DISCORD_BOT_TOKEN!
+const clientId = process.env.DISCORD_BOT_CLIENT_ID!
+
 // Construct and prepare an instance of the REST module
 const rest = new REST().setToken(token)
 
@@ -71,6 +68,27 @@ client.on('ready', () => {
   console.log('Bot started!')
 })
 
+client.on('messageCreate', (message) => {
+  console.log(message)
+  if (message.author.bot) return
+  if (!(message.channel.type === ChannelType.DM)) return
+
+  if (!isWhitelisted(message.author.id)) {
+    message.reply("You're not allowed to use this command.")
+    return
+  }
+
+  if (message.attachments.size === 0) return
+
+  const attachment = message.attachments.first()
+  if (!attachment) return
+
+  if (!attachment.contentType?.startsWith('audio/')) return
+
+  const url = attachment.url
+  
+})
+
 client.on('interactionCreate', async (interaction) => {
   if (!interaction.isChatInputCommand()) return
 
@@ -80,6 +98,11 @@ client.on('interactionCreate', async (interaction) => {
 
   if (!command) {
     console.error(`No command matching ${interaction.commandName} was found.`)
+    return
+  }
+
+  if (!isWhitelisted(interaction.user.id)) {
+    await interaction.reply("You're not allowed to use this command.")
     return
   }
 
@@ -104,3 +127,7 @@ client.on('interactionCreate', async (interaction) => {
 client.on('error', (error) => {
   sendError(error.name, error.message)
 })
+
+const isWhitelisted = (userId: string) => {
+  return userId === '242358261867741185' || userId === '230619260517482498'
+}
