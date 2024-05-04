@@ -2,7 +2,9 @@
   "compilerOptions": {
     "target": "es2021",
     "module": "commonjs",
-    "lib": ["es2021"],
+    "lib": [
+      "es2021"
+    ],
     "allowJs": true,
     "outDir": "build",
     "rootDir": "src",
@@ -10,7 +12,12 @@
     "noImplicitAny": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "composite": true
   },
-  "include": ["./src/**/*", "src/**/*.json", "src/**/*.sql"]
+  "include": [
+    "./src/**/*",
+    "src/**/*.json",
+    "src/**/*.sql"
+  ]
 }
