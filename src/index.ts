@@ -5,9 +5,9 @@ import {
   GatewayIntentBits,
   Partials
 } from 'discord.js'
-import { BotClient } from './DiscordBot/botClient'
+import { BotClient } from './Discord-Bot/DiscordBot/botClient'
 import { REST, Routes } from 'discord.js'
-import { sendError, startBot } from './DiscordBot/bot'
+import { sendError, startBot } from './Discord-Bot/DiscordBot/bot'
 import dotenv from 'dotenv'
 import path from 'path'
 

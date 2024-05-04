@@ -4,7 +4,7 @@ import {
   ChatInputCommandInteraction,
 } from 'discord.js'
 import { getConfigValue } from '../Config/config'
-import { client } from '..'
+import { client } from '../..'
 
 export const startBot = () => {
   client.login(getConfigValue('token'))
@@ -44,7 +44,7 @@ export const sendEmbed = (channel: TextChannel, embed: EmbedBuilder) => {
 }
 
 export const getChannelById = (channelId: string) => {
-  const guildId = getConfigValue('guildId')
+  const guildId = getConfigValue('guildId')!
 
   return client.guilds.cache
     .get(guildId)

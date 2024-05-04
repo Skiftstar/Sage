@@ -10,6 +10,12 @@ export class PromptProccessor{
     
     }
 
+    public async process(prompt : string, context: { [key: string]: any }) :Promise<string>{
+        return new Promise<string>(async (resolve, reject) => {
+            resolve(prompt)
+        });
+    }
+
     public registertransFomer(transformer: PromptTransformer):void{
         this.transformers.push(transformer);
     }
