@@ -1,10 +1,6 @@
 import {Prompt} from './Prompt';
 
-export class PromptTransformer {
-  constructor() {
-  }
+export interface PromptTransformer {
 
-  transform(prompt :Prompt) : Prompt {
-    return prompt;
-  }
+  transform : (prompt :Prompt, promptHistory : Prompt[]) => Promise<Prompt>
 }
