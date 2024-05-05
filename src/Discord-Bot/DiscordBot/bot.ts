@@ -1,13 +1,12 @@
 import {
   EmbedBuilder,
   TextChannel,
-  ChatInputCommandInteraction,
+  ChatInputCommandInteraction
 } from 'discord.js'
-import { getConfigValue } from '../Config/config'
 import { client } from '../..'
 
-export const startBot = () => {
-  client.login(getConfigValue('token'))
+export const startBot = (token: string) => {
+  client.login(token)
 }
 
 export const sendMessage = (channel: TextChannel, message: string) => {
@@ -43,9 +42,7 @@ export const sendEmbed = (channel: TextChannel, embed: EmbedBuilder) => {
   })
 }
 
-export const getChannelById = (channelId: string) => {
-  const guildId = getConfigValue('guildId')!
-
+export const getChannelById = (guildId: string, channelId: string) => {
   return client.guilds.cache
     .get(guildId)
     ?.channels.cache.get(channelId) as TextChannel

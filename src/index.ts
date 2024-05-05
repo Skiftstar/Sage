@@ -11,7 +11,7 @@ import { sendError, startBot } from './Discord-Bot/DiscordBot/bot'
 import dotenv from 'dotenv'
 import path from 'path'
 
-dotenv.config({ path: path.resolve(__dirname, '../../.env') })
+dotenv.config({ path: path.resolve(__dirname, '../.env') })
 
 export const client = new BotClient({
   intents: [
@@ -22,13 +22,13 @@ export const client = new BotClient({
   partials: [Partials.Channel]
 })
 
-const commandFolder = path.join(__dirname, 'Commands')
+const commandFolder = path.join(__dirname, 'Discord-Bot/Commands')
 const commandFiles = readdirSync(commandFolder)
 client.commands = new Collection()
 const commands: any[] = []
 
 for (const file of commandFiles) {
-  const command = require(`./Commands/${file}`)
+  const command = require(`./Discord-Bot/Commands/${file}`)
   if ('data' in command && 'execute' in command) {
     client.commands.set(command.data.name, command)
     commands.push(command.data.toJSON())
@@ -62,7 +62,7 @@ const rest = new REST().setToken(token)
   }
 })()
 
-startBot()
+startBot(token)
 
 client.on('ready', () => {
   console.log('Bot started!')
@@ -86,7 +86,6 @@ client.on('messageCreate', (message) => {
   if (!attachment.contentType?.startsWith('audio/')) return
 
   const url = attachment.url
-  
 })
 
 client.on('interactionCreate', async (interaction) => {
